@@ -28,3 +28,21 @@ release:
 	cargo build --release
 
 all: format lint test run
+
+install:
+	pip install --upgrade pip &&\
+		pip install -r requirements.txt
+
+test:
+	python -m pytest -vv --cov=src.lib
+
+format:	
+	black src/*.py
+
+lint:
+	ruff check src/*.py
+
+run:
+	ruff check *.py
+		
+all: install lint format test 
