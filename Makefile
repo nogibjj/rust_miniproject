@@ -37,10 +37,10 @@ test:
 	python -m pytest -vv --cov=src.lib
 
 format:	
-	black src/*.py
+	black mylib/*.py
 
 lint:
-	ruff check src/*.py
+	ruff check mylib/*.py
 
 run:
 	ruff check *.py
