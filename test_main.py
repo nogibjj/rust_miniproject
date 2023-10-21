@@ -1,7 +1,7 @@
 import os
 import pytest
 import csv
-from main import process_csv
+from mylib.main import process_csv
 
 
 @pytest.fixture
