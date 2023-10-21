@@ -1,5 +1,4 @@
-[![Clippy](https://github.com/nogibjj/rust_miniproject/actions/workflows/lint.yml/badge.svg)](https://github.com/nogibjj/rust_miniproject/actions/workflows/lint.yml)
-[![Tests](https://github.com/nogibjj/rust_miniproject/actions/workflows/tests.yml/badge.svg)](https://github.com/nogibjj/rust_miniproject/actions/workflows/tests.yml)
+[![Rust CI/CD Pipeline](https://github.com/nogibjj/rust_miniproject/actions/workflows/rustCI.yml/badge.svg)](https://github.com/nogibjj/rust_miniproject/actions/workflows/rustCI.yml)
 
 ## References
 
