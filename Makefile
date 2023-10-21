@@ -39,8 +39,11 @@ test:
 format:	
 	black mylib/*.py
 
+python_container-lint:
+	docker run --rm -i hadolint/hadolint < Dockerfile
+
 lint:
-	ruff check mylib/*.py
+	ruff check *.py mylib/*.py
 
 run:
 	ruff check *.py
