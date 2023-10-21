@@ -1,5 +1,4 @@
-# rust-new-project-template
-A good starting point for a new Rust project
+[![Clippy](https://github.com/nogibjj/rust_miniproject/actions/workflows/lint.yml/badge.svg)](https://github.com/nogibjj/rust_miniproject/actions/workflows/lint.yml)
 
 ## References
 
