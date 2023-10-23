@@ -3,6 +3,8 @@ use std::env;
 use std::error::Error;
 use std::fs::File;
 use std::io::prelude::*;
+use std::time::Instant;
+use std::process::Command;
 
 pub fn main_with_args(_args: Vec<String>) -> Result<(), Box<dyn Error>> {
     let args: Vec<String> = env::args().collect();
@@ -14,6 +16,8 @@ pub fn main_with_args(_args: Vec<String>) -> Result<(), Box<dyn Error>> {
 
     let input_file = &args[1];
     let output_file = "output.txt";
+
+    let start_time = Instant::now();
 
     let file = File::open(input_file)?;
     let mut rdr = ReaderBuilder::new().has_headers(true).from_reader(file);
@@ -40,7 +44,18 @@ pub fn main_with_args(_args: Vec<String>) -> Result<(), Box<dyn Error>> {
     let mut output = File::create(output_file)?;
     write!(output, "Average: {:.2}", average)?;
 
+    let elapsed_time = start_time.elapsed();
     println!("Average calculated and saved to {}", output_file);
+    println!("Time taken: {:?}", elapsed_time);
+
+    let output = Command::new("sh")
+        .arg("-c")
+        .arg("free -m")
+        .output()
+        .expect("Failed to execute command");
+    let output_str = String::from_utf8_lossy(&output.stdout);
+
+    println!("{}", output_str);
 
     Ok(())
 }

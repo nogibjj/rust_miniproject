@@ -1,6 +1,7 @@
 import csv
 import argparse
-
+import time
+import psutil
 
 def process_csv(input_file, output_file):
     total = 0
@@ -23,7 +24,6 @@ def process_csv(input_file, output_file):
     with open(output_file, "w") as output:
         output.write(f"Average: {average:.2f}")
 
-
 def main():
     parser = argparse.ArgumentParser(
         description="Process CSV file and calculate average."
@@ -33,8 +33,16 @@ def main():
 
     args = parser.parse_args()
 
+    start_time = time.time()  # Start the timer
+
     process_csv(args.input_file, args.output_file)
 
+    elapsed_time = time.time() - start_time  # Calculate elapsed time
+    print(f"Time taken: {elapsed_time:.2f} seconds")
+
+    process = psutil.Process()
+    memory_usage = process.memory_info().rss / (1024 ** 2)  # Memory usage in MB
+    print(f"Memory usage: {memory_usage:.2f} MB")
 
 if __name__ == "__main__":
     main()
