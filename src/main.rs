@@ -1,23 +1,39 @@
-use csv::ReaderBuilder;
-use std::env;
 use std::error::Error;
-use std::fs::File;
-use std::io::prelude::*;
 use std::time::Instant;
+use std::io::{Read};
+use std::fs::File;
+use csv::ReaderBuilder;
 use std::process::Command;
 
-pub fn main_with_args(_args: Vec<String>) -> Result<(), Box<dyn Error>> {
-    let args: Vec<String> = env::args().collect();
-
+pub fn main_with_args(args: Vec<String>) -> Result<(), Box<dyn Error>> {
     if args.len() != 2 {
         println!("Usage: {} <input_file>", args[0]);
         return Ok(());
     }
 
     let input_file = &args[1];
-    let output_file = "output.txt";
 
     let start_time = Instant::now();
+
+    // Code for executing the main script
+    let main_output = {
+        let mut main_process = Command::new("./data_processing")
+            .stdout(std::process::Stdio::piped())
+            .spawn()
+            .expect("Failed to execute data_processing");
+
+        let mut output = String::new();
+
+        if let Some(ref mut stdout) = main_process.stdout {
+            stdout.read_to_string(&mut output).expect("Failed to read stdout");
+        }
+
+        main_process.wait().expect("Failed to wait for data_processing to finish");
+
+        output
+    };
+
+    println!("{}", main_output);
 
     let file = File::open(input_file)?;
     let mut rdr = ReaderBuilder::new().has_headers(true).from_reader(file);
@@ -41,26 +57,25 @@ pub fn main_with_args(_args: Vec<String>) -> Result<(), Box<dyn Error>> {
         0.0
     };
 
-    let mut output = File::create(output_file)?;
-    write!(output, "Average: {:.2}", average)?;
-
     let elapsed_time = start_time.elapsed();
-    println!("Average calculated and saved to {}", output_file);
+    println!("Average calculated: {:.2}", average);
     println!("Time taken: {:?}", elapsed_time);
 
-    let output = Command::new("sh")
-        .arg("-c")
-        .arg("free -m")
-        .output()
-        .expect("Failed to execute command");
-    let output_str = String::from_utf8_lossy(&output.stdout);
-
-    println!("{}", output_str);
+    // Get memory info
+    if let Ok(output) = Command::new("free").arg("-m").output() {
+        if let Ok(output_str) = String::from_utf8(output.stdout) {
+            println!("{}", output_str);
+        } else {
+            println!("Failed to convert output to string");
+        }
+    } else {
+        println!("Failed to execute command");
+    }
 
     Ok(())
 }
 
 pub fn main() -> Result<(), Box<dyn Error>> {
-    let args: Vec<String> = env::args().collect();
+    let args: Vec<String> = std::env::args().collect();
     main_with_args(args)
 }
